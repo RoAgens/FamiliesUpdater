@@ -21,6 +21,8 @@ namespace FamiliesUpdater.ViewModels
 
         public ViewModel()
         {
+            _selectedFolder = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder";
+
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = this;
             _mainWindow.Show();
@@ -99,14 +101,7 @@ namespace FamiliesUpdater.ViewModels
 
                 if (result == DialogResult.OK)
                 {
-                    // Получить путь к выбранной папке
                     _selectedFolder = folderBrowserDialog.SelectedPath;
-
-                    // Теперь у вас есть доступ к выбранной папке (selectedFolder).
-                    // Вы можете выполнить нужные действия с этой папкой.
-
-                    // Например, вы можете вывести путь к выбранной папке в окне сообщения:
-                    //TaskDialog.Show("Выбранная папка", "Выбранная папка: " + _selectedFolder);
                 }
             }));
 
@@ -117,10 +112,9 @@ namespace FamiliesUpdater.ViewModels
         public RelayCommand UpDate => _upDate ??
             (_upDate = new RelayCommand(obj =>
             {
-                //string path = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder\ABC-VAV-MP1.rfa";
-                _mainWindow.Close();
                 var model = new FamilesExplorer(_selectedFolder, "rfa");
                 model.LoadFamily();
+                _mainWindow.Close();
             }));
 
         //private void ShowReport(int renamedRoomsCount)

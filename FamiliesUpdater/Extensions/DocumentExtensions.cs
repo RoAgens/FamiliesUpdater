@@ -12,7 +12,7 @@ namespace FamiliesUpdater.Exeptions
 
             try
             {
-                using (Transaction tx = new Transaction(doc, $"{func.Method.Name}"))
+                using (var tx = new Transaction(doc, $"{func.Method.Name}"))
                 {
                     if (tx.Start() == TransactionStatus.Started)
                     {

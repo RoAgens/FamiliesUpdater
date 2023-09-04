@@ -24,13 +24,13 @@ namespace FamiliesUpdater
 
             //_folderPath = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder";
 
-            _familyPath = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder\ABC-VAV-MP1.rfa";
+            //_familyPath = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder\ABC-VAV-MP1.rfa";
             //_familyPath = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder\ABC-VAV-MP2.rfa";
             //_familyPath = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder\ABC-VAV-MP3.rfa";
 
-            var filesExplorer = new FamilesExplorer(_familyPath, "rfa", "rte");
-            filesExplorer.GetSubFoldersFiles = false;
-            filesExplorer.LoadFamily();
+            //var filesExplorer = new FamilesExplorer(_familyPath, "rfa", "rte");
+            //filesExplorer.GetSubFoldersFiles = false;
+            //filesExplorer.LoadFamily();
             //var files = filesExplorer.FamilyFiles();
 
             string files1 = "";
