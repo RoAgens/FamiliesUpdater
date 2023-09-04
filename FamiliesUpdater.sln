@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamiliesUpdater", "FamiliesUpdater\FamiliesUpdater.csproj", "{1ABEB3C7-D09E-4A7D-8CE7-8C994B798C34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1ABEB3C7-D09E-4A7D-8CE7-8C994B798C34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ABEB3C7-D09E-4A7D-8CE7-8C994B798C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ABEB3C7-D09E-4A7D-8CE7-8C994B798C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ABEB3C7-D09E-4A7D-8CE7-8C994B798C34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93ACA41E-1AAA-4964-A74C-103C0BE15EEE}
+	EndGlobalSection
+EndGlobal
