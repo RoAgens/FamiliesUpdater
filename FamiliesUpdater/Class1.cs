@@ -2,21 +2,56 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using FamiliesUpdater.ViewModels;
-using FamiliesUpdater.Views;
 
 namespace FamiliesUpdater
 {
     [Transaction(TransactionMode.Manual)]
     public class Class1 : IExternalCommand
     {
-        private string _folderPath;
-        private string _familyPath;
-
         public Result Execute(ExternalCommandData commandData, ref string message, Autodesk.Revit.DB.ElementSet elements)
         {
             Project.Initialize(commandData);
 
-            var viewModels = new ViewModel();
+            try
+            {
+                using (var t = new Transaction(Project.Doc, "Нумерация по сплайну"))
+                {
+                    t.Start();
+
+                        var viewModel = new ViewModel();
+
+                        foreach (FamilyFile familyFile in viewModel.FamilyFiles)
+                        {
+                            Project.Doc.LoadFamily(familyFile.FamilyPath);
+                        }
+
+                    t.Commit();
+                }
+
+                return Result.Succeeded;
+            }
+
+            catch
+            {
+
+            }
+
+            //try
+            //{
+            //    using (var tx = new Transaction(Project.Doc, "UpDate"))
+            //    {
+            //        if (tx.Start() == TransactionStatus.Started)
+            //        {
+            //            var viewModels = new ViewModel();
+
+            //            tx.Commit();
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+
+            //}
 
             //_folderPath = @"E:\_REVIT+\__Фирмы\Elsen\";
             //_folderPath = @"E:\__РАБОТА\ButchUpgrader\FamiliesFolder\";
@@ -33,7 +68,7 @@ namespace FamiliesUpdater
             //filesExplorer.LoadFamily();
             //var files = filesExplorer.FamilyFiles();
 
-            string files1 = "";
+            //string files1 = "";
 
             //var isLoad1 = new FamilyFile(_familyPath).Load(true);
             //new FamilyFile(_familyPath).Copy();

@@ -4,6 +4,7 @@ using FamiliesUpdater.Models;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Autodesk.Revit.UI;
+using System.Collections.Generic;
 
 namespace FamiliesUpdater.ViewModels
 {
@@ -21,11 +22,11 @@ namespace FamiliesUpdater.ViewModels
 
         public ViewModel()
         {
-            _selectedFolder = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder";
+            //_mainWindow = mainWindow;
 
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = this;
-            _mainWindow.Show();
+            _mainWindow.ShowDialog();
         }
 
         public bool IsProjectUpdate
@@ -109,12 +110,18 @@ namespace FamiliesUpdater.ViewModels
         private string _selectedFolder;
         private MainWindow _mainWindow;
 
+        public List<FamilyFile> FamilyFiles { get; private set; }
+
+
         public RelayCommand UpDate => _upDate ??
             (_upDate = new RelayCommand(obj =>
             {
+                _selectedFolder = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder";
+
                 var model = new FamilesExplorer(_selectedFolder, "rfa");
-                model.LoadFamily();
+                FamilyFiles = model.FamilyFiles;
                 _mainWindow.Close();
+                //model.LoadFamily();
             }));
 
         //private void ShowReport(int renamedRoomsCount)

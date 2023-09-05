@@ -9,14 +9,19 @@ namespace FamiliesUpdater
     {
         private readonly string _familyPath;
 
+        public string FamilyPath => _familyPath;
+
         public FamilyFile(string familyPath) => _familyPath = familyPath;
         public string Version => _familyPath.GetRevitFileVersion();
         public bool Load(bool IsCopy)
         {
             if (IsCopy) Copy();
-            return Project.Doc.Do(LoadFamily);
+            //return Project.Doc.Do(LoadFamily);
+            return LoadFamily();
         }
         public bool UpDate() => Project.Doc.Do(UpDateFamily);
+        //public bool UpDate() => UpDateFamily();
+
         private bool LoadFamily() => IsFile ? Project.Doc.LoadFamily(_familyPath) : false;
         private void Copy()
         {

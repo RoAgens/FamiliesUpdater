@@ -1,28 +1,93 @@
 ﻿
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace FamiliesUpdater
 {
-    public class FamilesExplorer : FilesExplorer
+    internal class FamilesExplorer : FilesExplorer
     {
         private string[] _extensions = null;
 
         public bool IsCopy { get; set; } = false;
+        //public FamilesExplorer()
+        //{
+
+        //}
 
         public FamilesExplorer(string path, params string[] extensions) : base(path)
                => _extensions = extensions;
 
         public void LoadFamily()
         {
-            foreach(FamilyFile familyFile in FamilyFiles)
+            //try
+            //{
+            //    using (var tx = new Transaction(doc, $"{func.Method.Name}"))
+            //    {
+            //        if (tx.Start() == TransactionStatus.Started)
+            //        {
+            //            foreach (FamilyFile familyFile in FamilyFiles)
+            //            {
+            //                Project.Doc.LoadFamily(familyFile.);
+            //            }
+
+            //            tx.Commit();
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+
+            //}
+
+            //using (Transaction trans = new Transaction(Project.Doc, "Load Family"))
+            //{
+            //    trans.Start();
+
+            //    //FamilySymbol familySymbol = null;
+
+            //    try
+            //    {
+            //        foreach (FamilyFile familyFile in FamilyFiles)
+            //        {
+            //            Project.Doc.LoadFamily(familyFile.FamilyPath);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Обработка других ошибок
+            //        //TaskDialog.Show("Error", ex.Message);
+            //        //return false;
+            //    }
+
+            //    trans.Commit();
+            //}
+
+            foreach (FamilyFile familyFile in FamilyFiles)
             {
-                if (!(familyFile.Load(IsCopy)))
-                      familyFile.UpDate();
+                try
+                {
+                    Project.Doc.LoadFamily(familyFile.FamilyPath);
+                }
+                catch (Exception ex)
+                {
+    
+                }
             }
         }
 
-        private List<FamilyFile> FamilyFiles
+
+                //foreach (FamilyFile familyFile in FamilyFiles)
+                //{
+                //    if (!(familyFile.Load(IsCopy)))
+                //          familyFile.UpDate();
+                //}
+            //}
+
+        public List<FamilyFile> FamilyFiles
         {
             get
             {
