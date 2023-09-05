@@ -15,7 +15,6 @@ namespace FamiliesUpdater.Exeptions
                 using (StreamReader reader = new StreamReader(fileStream))
                 {
                     content = reader.ReadToEnd();
-                    //var content1 = content.Split('\n');
                 }
             }
             catch (IOException ex)
@@ -41,8 +40,6 @@ namespace FamiliesUpdater.Exeptions
 
             return extractedWord.Replace("\0", "");
         }
-
-        //string[] files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories);
 
         public static List<string> GetFolderFiles(this string folderPath, bool isFromSubFolders, params string[] exections)
         {

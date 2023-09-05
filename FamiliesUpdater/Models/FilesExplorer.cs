@@ -9,7 +9,6 @@ namespace FamiliesUpdater
     {
         private readonly string _path = "";
         private List<string> _files = null;
-
         public bool GetSubFoldersFiles { private get; set; } = false;
 
         public FilesExplorer(string path) => _path = path;
@@ -40,10 +39,10 @@ namespace FamiliesUpdater
             }
         }
 
-        private List<string> GetFolderFiles()
-        {
-            var mode = GetSubFoldersFiles ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            return Directory.GetFiles(_path, "*", mode).ToList();
-        }
+        private List<string> GetFolderFiles() => Directory.GetFiles(_path, "*", GetSearchOption).ToList();
+
+        private SearchOption GetSearchOption => GetSubFoldersFiles ?
+                                                SearchOption.AllDirectories
+                                              : SearchOption.TopDirectoryOnly;
     }
 }

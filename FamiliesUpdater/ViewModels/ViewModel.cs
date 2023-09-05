@@ -1,10 +1,8 @@
 ﻿
 using FamiliesUpdater.Views;
-using FamiliesUpdater.Models;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Autodesk.Revit.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FamiliesUpdater.ViewModels
 {
@@ -18,12 +16,12 @@ namespace FamiliesUpdater.ViewModels
         private bool isDeleteBackup;
         private bool isIncludeSubfolders;
 
-        //private FamilesExplorer _model;
+        private RelayCommand _upDate;
+        private string _selectedFolder;
+        private MainWindow _mainWindow;
 
         public ViewModel()
         {
-            //_mainWindow = mainWindow;
-
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = this;
             _mainWindow.ShowDialog();
@@ -106,25 +104,33 @@ namespace FamiliesUpdater.ViewModels
                 }
             }));
 
-        private RelayCommand _upDate;
-        private string _selectedFolder;
-        private MainWindow _mainWindow;
-
-        public List<FamilyFile> FamilyFiles { get; private set; }
-
-
         public RelayCommand UpDate => _upDate ??
             (_upDate = new RelayCommand(obj =>
             {
-                _selectedFolder = @"E:\__РАБОТА\FamiliesUpdater\FamiliesFolder";
+                if (_selectedFolder != "")
+                {
+                    var model = new FamilesExplorer(_selectedFolder, GetExtensions())
+                    {
+                        IsCopy = IsCreateCopies,
+                        GetSubFoldersFiles = IsIncludeSubfolders
+                    };
 
-                var model = new FamilesExplorer(_selectedFolder, "rfa");
-                FamilyFiles = model.FamilyFiles;
-                _mainWindow.Close();
-                //model.LoadFamily();
+                    FamilyFiles = model.FamilyFiles;
+                    _mainWindow.Close();
+                }
             }));
 
-        //private void ShowReport(int renamedRoomsCount)
-        //        => new ReportWindow($"Обновлено {renamedRoomsCount}").Show();
+        private string[] GetExtensions()
+        {
+            var extensions = new List<string>();
+
+            if (IsProjectUpdate) extensions.Add("rvt"); 
+            if (IsFamilyUpdate) extensions.Add("rfa");
+            if (IsTemplateUpdate) extensions.Add("rte");
+
+            return extensions.ToArray();
+        }
+
+        public List<FamilyFile> FamilyFiles { get; private set; }
     }
 }

@@ -29,7 +29,7 @@
                               IsChecked="{Binding IsOverwriteFiles}" />
                     <CheckBox Content="Create copies of updated files"
                               Margin="4"
-                              IsChecked="{Binding IsOverwriteFiles}" />
+                              IsChecked="{Binding IsCreateCopies}" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Margin="4" Header="Additional settings">

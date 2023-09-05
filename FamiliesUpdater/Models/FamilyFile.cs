@@ -7,25 +7,43 @@ namespace FamiliesUpdater
 {
     internal class FamilyFile
     {
+        private const string copyFolderName = "Original";
         private readonly string _familyPath;
+        private bool _isCopy;
 
         public string FamilyPath => _familyPath;
 
-        public FamilyFile(string familyPath) => _familyPath = familyPath;
-        public string Version => _familyPath.GetRevitFileVersion();
-        public bool Load(bool IsCopy)
+        public FamilyFile(string familyPath, bool isCopy = false)
         {
-            if (IsCopy) Copy();
-            //return Project.Doc.Do(LoadFamily);
-            return LoadFamily();
+            _familyPath = familyPath;
+            _isCopy = isCopy;
         }
-        public bool UpDate() => Project.Doc.Do(UpDateFamily);
-        //public bool UpDate() => UpDateFamily();
+        public string Version => _familyPath.GetRevitFileVersion();
 
-        private bool LoadFamily() => IsFile ? Project.Doc.LoadFamily(_familyPath) : false;
+        public void LoadUpDate()
+        {
+            var file = Directory.GetParent(_familyPath).Name;
+            if (file != copyFolderName)
+                if (!(LoadFamily())) UpDateFamily();
+        }
+
+        private bool LoadFamily()
+        {
+            var iSLoaded = Project.Doc.LoadFamily(_familyPath);
+            if (iSLoaded && _isCopy) Copy();
+
+            return iSLoaded;
+        }
+
+        public bool UpDateFamily()
+        {
+            return !(Project.App.OpenDocumentFile(ModelPathUtils.ConvertUserVisiblePathToModelPath(_familyPath),
+                                                  new OpenOptions()) is null);
+        }
+
         private void Copy()
         {
-            string newFolderName = Path.Combine(Path.GetDirectoryName(_familyPath), "Original");
+            string newFolderName = Path.Combine(Path.GetDirectoryName(_familyPath), copyFolderName);
 
             if (IsFile)
             {
@@ -36,10 +54,7 @@ namespace FamiliesUpdater
 
              File.Copy(_familyPath, Path.Combine(newFolderName, Path.GetFileName(_familyPath)), true); 
         }
-        private bool UpDateFamily()
-            => IsFile
-            ? !(Project.App.OpenDocumentFile(ModelPathUtils.ConvertUserVisiblePathToModelPath(_familyPath), new OpenOptions()) is null)
-            : false;
+
         private bool IsFile => File.Exists(_familyPath);
     }
 }
