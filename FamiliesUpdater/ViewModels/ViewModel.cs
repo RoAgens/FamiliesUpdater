@@ -2,26 +2,33 @@
 using FamiliesUpdater.Views;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using FamiliesUpdater.Properties;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace FamiliesUpdater.ViewModels
 {
     internal class ViewModel : BaseViewModel
     {
-        private bool isProjectUpdate;
-        private bool isFamilyUpdate;
-        private bool isTemplateUpdate;
+        private bool isProjectUpdate = Settings.Default.IsProjectUpdate;
+        private bool isFamilyUpdate = Settings.Default.IsFamilyUpdate;
+        private bool isTemplateUpdate = Settings.Default.IsTemplateUpdate;
         private bool isOverwriteFiles;
-        private bool isCreateCopies;
+        private bool isCreateCopies = Settings.Default.IsCreateCopies;
         private bool isDeleteBackup;
-        private bool isIncludeSubfolders;
+        private bool _isIncludeSubfolders = Settings.Default.IsIncludeSubfolders;
+
+        private string _selectedFolder = Settings.Default.LastFolder;
 
         private RelayCommand _upDate;
-        private string _selectedFolder;
         private MainWindow _mainWindow;
 
         public ViewModel()
         {
+            if (Settings.Default.Path1 != "") _folders.Add(Settings.Default.Path1);
+            if (Settings.Default.Path2 != "") _folders.Add(Settings.Default.Path2);
+            if (Settings.Default.Path3 != "") _folders.Add(Settings.Default.Path3);
+
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = this;
             _mainWindow.ShowDialog();
@@ -33,6 +40,7 @@ namespace FamiliesUpdater.ViewModels
             set
             {
                 isProjectUpdate = value;
+                Settings.Default.IsProjectUpdate = value;
                 OnPropertyChanged();
             }
         }
@@ -42,6 +50,7 @@ namespace FamiliesUpdater.ViewModels
             set
             {
                 isFamilyUpdate = value;
+                Settings.Default.IsProjectUpdate = value;
                 OnPropertyChanged();
             }
         }
@@ -51,6 +60,7 @@ namespace FamiliesUpdater.ViewModels
             set
             {
                 isTemplateUpdate = value;
+                Settings.Default.IsTemplateUpdate = value;   
                 OnPropertyChanged();
             }
         }
@@ -69,6 +79,7 @@ namespace FamiliesUpdater.ViewModels
             set
             {
                 isCreateCopies = value;
+                Settings.Default.IsCreateCopies = value;
                 OnPropertyChanged();
             }
         }
@@ -83,10 +94,11 @@ namespace FamiliesUpdater.ViewModels
         }
         public bool IsIncludeSubfolders
         {
-            get => isIncludeSubfolders;
+            get => _isIncludeSubfolders;
             set
             {
-                isIncludeSubfolders = value;
+                _isIncludeSubfolders = value;
+                Settings.Default.IsIncludeSubfolders = _isIncludeSubfolders;
                 OnPropertyChanged();
             }
         }
@@ -96,19 +108,45 @@ namespace FamiliesUpdater.ViewModels
             (_selectFolder = new RelayCommand(obj =>
             {
                 var folderBrowserDialog = new FolderBrowserDialog();
+
                 DialogResult result = folderBrowserDialog.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
                     _selectedFolder = folderBrowserDialog.SelectedPath;
+
+                    UpDateFolderList();
+                    OnPropertyChanged("Folders");
+                    SaveFolderList();
+
+                    Settings.Default.LastFolder = _selectedFolder;
                 }
             }));
+
+        private void UpDateFolderList()
+        {
+            // add deleting existing folder
+            if (!(_folders.Any(f => f == _selectedFolder)))
+                {
+                    _folders.Add(_selectedFolder);
+                    if (_folders.Count > 2) _folders.Remove(_folders[0]);
+                }
+        }
+
+        private void SaveFolderList()
+        {
+            if (_folders[0] != "") Settings.Default.Path1 = _folders[0];
+            if (_folders[1] != "") Settings.Default.Path2 = _folders[1];
+            if (_folders[2] != "") Settings.Default.Path3 = _folders[2];
+        }
 
         public RelayCommand UpDate => _upDate ??
             (_upDate = new RelayCommand(obj =>
             {
                 if (_selectedFolder != "")
                 {
+                    Settings.Default.LastFolder = _selectedFolder;
+
                     var model = new FamilesExplorer(_selectedFolder, GetExtensions())
                     {
                         IsCopy = IsCreateCopies,
@@ -116,9 +154,37 @@ namespace FamiliesUpdater.ViewModels
                     };
 
                     FamilyFiles = model.FamilyFiles;
+
+                    Settings.Default.Save();
                     _mainWindow.Close();
                 }
             }));
+
+        private ObservableCollection<string> _folders = new ObservableCollection<string>();
+
+        public ObservableCollection<string> Folders
+        {
+            get { return _folders; }
+            set
+            {
+                //if (value.Count > 1) value.Remove(_folders[0]);
+                _folders = value;
+                OnPropertyChanged("Folders");
+            }
+        }
+
+        private string _selectedItem;
+
+        public string SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                _selectedFolder = value;
+                OnPropertyChanged("SelectedItem");
+            }
+        }
 
         private string[] GetExtensions()
         {

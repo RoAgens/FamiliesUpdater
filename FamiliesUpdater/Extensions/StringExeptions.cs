@@ -5,6 +5,9 @@ namespace FamiliesUpdater.Exeptions
 {
     public static class StringExeptions
     {
+        public static bool GetBool(this string boolean)
+                             => boolean == "true" ? true : false;
+
         public static string GetRevitFileVersion(this string filePath)
         {
             string content = null;
